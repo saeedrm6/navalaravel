@@ -1,0 +1,550 @@
+@font-face {
+    font-family: nava;
+    src: url(/font/Vazir-FD.eot);
+    src: url(/font/Vazir-FD.ttf);
+    src: url(/font/Vazir-FD.woff)
+}
+
+body, input, textarea, select, .chosen-container-single .chosen-single, .btn, .button {
+    font-family: nava !important;
+    letter-spacing: 0
+}
+
+* {
+    letter-spacing: 0
+}
+
+a, a:hover, a:focus {
+    text-decoration: none !important
+}
+
+.content-area {
+    padding: 60px 0
+}
+
+.content-area.music .navamusicexlusive .col-sm-5, .content-area.music .navamusicexlusive .col-sm-7 {
+    display: table-cell;
+    float: none
+}
+
+.content-area.music .navamusicexlusive .col-sm-5 {
+    vertical-align: top
+}
+
+.content-area.music .navamusicexlusive .col-sm-7 {
+    vertical-align: middle
+}
+
+.content-area.music .navamusicexlusive div.col-sm-7 .blog-single-meta {
+    margin-right: 45px;
+    float: right
+}
+
+.blog-single-meta h3 {
+    font-family: 'nava';
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.4em;
+    letter-spacing: .3px;
+    color: rgba(77, 77, 77, .7);
+    margin: 0;
+    padding: 0;
+    margin-bottom: 15px
+}
+
+.blog-single-meta h2 {
+    font-family: 'nava';
+    font-size: 54px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 0;
+    line-height: 1.03em;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    margin-bottom: 25px
+}
+
+.blog-single-meta .entry-play-action {
+    margin-bottom: 35px
+}
+
+.blog-single-meta .entry-play-action .button {
+    border-radius: 30px;
+    text-transform: none;
+    cursor: pointer
+}
+
+.button.small, button.small, input[type=button].small, input[type=submit].small {
+    font-weight: 300;
+    font-size: 12px;
+    padding: 12px 35px;
+    line-height: 1em;
+    margin: 2px
+}
+
+.button.fill, button.fill, input[type=button].fill, input[type=submit].fill {
+    background-color: #ff4f4f;
+    color: #000
+}
+
+.text-light, .text-white, .text-light *, .text-white * {
+    color: #fff !important
+}
+
+.button {
+    box-shadow: none;
+    color: #ff4f4f;
+    border: 1px solid #ff4f4f;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Montserrat';
+    font-style: normal;
+    text-transform: uppercase;
+    padding: 10px 35px;
+    border-radius: 30px;
+    background-color: transparent;
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    -ms-transition: all 0.25s ease;
+    -o-transition: all 0.25s ease;
+    transition: all 0.25s ease
+}
+
+.downmusic {
+    background: transparent !important;
+    color: #000 !important;
+    border: 1px solid #ff4f4f !important
+}
+
+.downmusic:hover {
+    background: #000 !important;
+    color: #ffffff !important;
+    transition: all .2s ease-in-out !important;
+    border: 1px solid #000 !important
+}
+
+.entry-post-info div {
+    display: inline-block
+}
+
+.entry-post-info i {
+    color: #ff4f4f;
+    margin-right: 8px
+}
+
+.mejs-controls .mejs-play button:after {
+    content: '' !important
+}
+
+.mejs-container .mejs-controls {
+    background: transparent !important
+}
+
+.mejs-controls .mejs-pause button:after {
+    content: "" !important
+}
+
+.exclusivereated h2 {
+    font-size: 1.2em;
+    text-align: justify;
+    color: #000
+}
+
+.k-music-lyrics.k-side-box h3 {
+    font-size: 15px
+}
+
+.k-music-lyrics.k-side-box h3 a {
+    color: #000
+}
+
+.music-excerpt h3 {
+    font-size: 15px
+}
+
+.dropdown-menu {
+    top: auto;
+    right: 40%;
+    left: auto
+}
+
+.nime2music {
+    background: #f5f5f5
+}
+
+.singleplayer .mejs-prevtrack:after {
+    color: #fff;
+    cursor: pointer
+}
+
+.singleplayer .mejs-play:after {
+    color: #fff;
+    cursor: pointer
+}
+
+.singleplayer .mejs-nexttrack:after {
+    color: #fff;
+    cursor: pointer
+}
+
+.singleplayer .mejs-pause:after {
+    color: #fff;
+    cursor: pointer
+}
+
+.singleplayer .mejs-controls .mejs-unmute button:after, .mejs-controls .mejs-mute button:after {
+    color: #fff;
+    cursor: pointer
+}
+
+.singleplayer .mejs-container * {
+    color: #fff
+}
+
+.singleplayer {
+    background: #212121
+}
+
+.singleplayer .mejs-controls .mejs-time-rail .mejs-time-current {
+    background-color: #ff4f4f
+}
+
+.singleplayer .mejs-controls .mejs-time-rail .mejs-time-loaded, .singleplayer .mejs-time-total {
+    background: #f7f7f7a8
+}
+
+.videoinertitle h2 {
+    font-weight: 900
+}
+
+.viditem {
+    min-height: 227px !important
+}
+
+.viditem .jeg_thumb:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: .3;
+    transition: .3s ease;
+    z-index: 1;
+    pointer-events: none
+}
+
+.viditem .jeg_thumb a:after {
+    content: "\f04b";
+    color: #fff;
+    font-family: Fontawesome;
+    border-radius: 100%;
+    border: 2px solid #fff;
+    font-size: 32px;
+    line-height: 44px;
+    height: 48px;
+    width: 48px;
+    letter-spacing: 6px;
+    margin: -40px 0 0 -40px;
+    -webkit-backface-visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 999
+}
+
+.viditem h2 {
+    font-size: 1.3em
+}
+
+.k-commentt {
+    background-color: #fff
+}
+
+.conter {
+    background: #f6f6f6;
+    float: right;
+    width: 100%;
+    color: #363c43;
+    font-size: 18px;
+    padding: 20px 0
+}
+
+.titartlin {
+    float: left;
+    width: 100%;
+    height: 60px;
+    position: relative;
+    margin-bottom: 10px;
+    margin-top: 15px
+}
+
+.titartlin b {
+    font-weight: 400
+}
+
+.titartlin span {
+    margin: 0 0 0 15px;
+    font-size: 60px;
+    position: relative;
+    margin-top: 0;
+    color: #ff2e5b
+}
+
+.titartlin a {
+    float: left;
+    padding: 10px 15px 8px 15px;
+    border-radius: 20px;
+    border: 2px solid #5b626a;
+    color: #232930;
+    font-size: 12px;
+    margin-top: 0
+}
+
+.titartlin h2 {
+    font-size: 1.5em;
+    display: inline
+}
+
+.suginart {
+    float: right;
+    width: 30%;
+    height: 85px;
+    margin: 1.5%;
+    background: #dfe3e8;
+    padding: 5px 5px 10px 5px;
+    margin-top: 4px;
+    position: relative;
+    color: #fff;
+    transition: .3s;
+    border-radius: 5px
+}
+
+.suginart img {
+    float: right;
+    width: 75px;
+    height: 75px;
+    border-radius: 7px
+}
+
+.relatedintit {
+    float: right;
+    width: 70%;
+    height: 60px;
+    position: relative
+}
+
+.suginart .relatedintit i {
+    color: #5e656e
+}
+
+.relatedintit i {
+    font-style: normal;
+    position: absolute;
+    right: 10px;
+    top: 13px;
+    font-size: 12px;
+    color: #bbb;
+    letter-spacing: .5px;
+    margin-top: 3px
+}
+
+.suginart .relatedintit h2 {
+    color: #3a4149;
+    font-size: 14px
+}
+
+.relatedintit h2 {
+    font-weight: 400;
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    font-size: 13px;
+    color: #888;
+    letter-spacing: .5px
+}
+
+.suginart .relatedintit u {
+    font-weight: 400;
+    position: absolute;
+    left: 10px;
+    top: 50px;
+    font-size: 11px;
+    letter-spacing: .5px;
+    color: #6d757e;
+    text-decoration: none
+}
+
+.suginart .adderdark {
+    color: #232930;
+    font-size: 14px;
+    font-weight: 400;
+    opacity: .4;
+    margin-top: 5px
+}
+
+.adderdark {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    font-size: 11px;
+    color: #d7d7d7
+}
+
+.single-music .singleplayer .mejs-time {
+    padding: 10px 12px
+}
+
+.single-music .singleplayer .mejs-time-rail {
+    padding-top: 5px !important
+}
+
+.single-music .singleplayer {
+    direction: ltr !important
+}
+
+article.k-news-item p {
+    color: #000;
+    font-size: 12px;
+    text-align: justify
+}
+
+.jeg_thumb .jeg_post_category a {
+    letter-spacing: 0 !important
+}
+
+.home .vc_custom_1488853361713 {
+    background-color: #f5f5f5 !important
+}
+
+@media only screen and (max-width: 768px) {
+    .content-area.music .navamusicexlusive .col-sm-5 {
+        display: block
+    }
+
+    .content-area.music .navamusicexlusive .col-sm-7 {
+        display: block
+    }
+
+    .music-excerpt h3 {
+        margin: 1.9em 0 .5em
+    }
+
+    #saeedcontent {
+        display: flex;
+        flex-flow: column
+    }
+
+    #saeedcontent .vc_col-sm-8 {
+        order: 1
+    }
+
+    #saeedcontent .vc_col-sm-4 {
+        order: 2
+    }
+
+    .jeg_navbar_mobile .jeg_search_wrapper .jeg_search_input {
+        color: #000 !important
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    .blog-single-meta h2 {
+        font-size: 30px !important
+    }
+
+    .blog-single-meta h3 {
+        margin: 15px 0 !important
+    }
+}
+
+.bgimg-1 {
+    background-image: url(https://www.w3schools.com/howto/img_parallax.jpg);
+    min-height: 700px
+}
+
+.bgimg-1 {
+    position: relative;
+    opacity: .65;
+    background-attachment: fixed;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover
+}
+
+.bgimg-1:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(to bottom right, #fff, #000);
+    opacity: .6
+}
+
+.caption {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    z-index: 1
+}
+
+.caption span.border {
+    background-color: red;
+    color: #fff;
+    padding: 18px;
+    font-size: 25px
+}
+
+.m-social-networks {
+    position: relative;
+    bottom: 0;
+    z-index: 999;
+    text-align: center
+}
+
+.m-social-networks a {
+    float: none;
+    font-size: 25px;
+    color: #111
+}
+
+@media only screen and (max-width: 560px) {
+    .m-social-networks {
+        width: 100%;
+        padding: 0
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    .size-1400 {
+        padding-bottom: 124% !important
+    }
+
+    .me-navagram-desc {
+        margin-bottom: 0 !important;
+        height: 130px;
+        line-height: 25px
+    }
+
+    .k-news-item .conc-date {
+        position: absolute;
+        bottom: 15px;
+        right: 15px
+    }
+}
+
+
+body{
+    direction: rtl;
+}
+
+.jeg_main_menu > li{
+    float: right;
+}
