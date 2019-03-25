@@ -280,14 +280,14 @@ class ApiController extends Controller
                 ]);
 
                 // dd(ffmpeg_video('/'.$save,'240:-2', '96k', '410K' ));
-                $ffmpeg = Ffmpeg::create([
-                    'post_id'   =>  $post->id,
-                    'patch'     =>  '/'.$save,
-                    'size'      =>  '240:-2',
-                    'audio'     =>  '96k',
-                    'bitrate'   =>  '410K',
-                    'format'    =>  'mp4',
-                ]);
+                // $ffmpeg = Ffmpeg::create([
+                //     'post_id'   =>  $post->id,
+                //     'patch'     =>  '/'.$save,
+                //     'size'      =>  '240:-2',
+                //     'audio'     =>  '96k',
+                //     'bitrate'   =>  '410K',
+                //     'format'    =>  'mp4',
+                // ]);
 
                 $postmeta2 = PostMeta::create([
                     'post_id'   =>  $post->id,
