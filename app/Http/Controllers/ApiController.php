@@ -15,10 +15,12 @@ use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use phpseclib\Crypt\Hash;
+// use phpseclib\Crypt\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class ApiController extends Controller
 {
+
     public function init_signup(Request $request)
     {
         $response = array('response' => '', 'success'=>false);
@@ -183,8 +185,28 @@ class ApiController extends Controller
 
     public function detailofuser(Request $request,User $user)
     {
-//        return $request->user();
-        return response()->json([$user]);
+        $data = [
+            'name'  =>  $user->name,
+            'bio'   =>  $user->bio,
+            'thumbnail' =>  $user->getuserprofile(),
+            'social'    =>  $user->social_medias()
+        ];
+        return response()->json([$data]);
+    }
+
+    public function detailofmine(){
+        $user = request()->user();
+        $data = [
+            'name'  =>  $user->name,
+            'email' =>  $user->email,
+            'mobile'    =>  $user->mobile,
+            'status'    =>  $user->status,
+            'role'  =>  $user->role,
+            'bio'   =>  $user->bio,
+            'thumbnail' =>  $user->getuserprofile(),
+            'social'    =>  $user->social_medias(),
+        ];
+        return response()->json([$data]);
     }
 
     public function showpost(Post $post)
@@ -258,14 +280,14 @@ class ApiController extends Controller
                 ]);
 
                 // dd(ffmpeg_video('/'.$save,'240:-2', '96k', '410K' ));
-                // $ffmpeg = Ffmpeg::create([
-                //     'post_id'   =>  $post->id,
-                //     'patch'     =>  '/'.$save,
-                //     'size'      =>  '240:-2',
-                //     'audio'     =>  '96k',
-                //     'bitrate'   =>  '410K',
-                //     'format'    =>  'mp4',
-                // ]);
+                $ffmpeg = Ffmpeg::create([
+                    'post_id'   =>  $post->id,
+                    'patch'     =>  '/'.$save,
+                    'size'      =>  '240:-2',
+                    'audio'     =>  '96k',
+                    'bitrate'   =>  '410K',
+                    'format'    =>  'mp4',
+                ]);
 
                 $postmeta2 = PostMeta::create([
                     'post_id'   =>  $post->id,
@@ -304,7 +326,7 @@ class ApiController extends Controller
             $limit = 10;
             $offset = 0;
         }
-        $posts = Post::where('status','publish')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+        $posts = Post::where('status','publish')->where('post_type','post')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
         $response = array();
         foreach ($posts as $post){
             $thumbnail = @$post->metas()->where('key','thumbnail')->first()->value;
@@ -442,5 +464,162 @@ class ApiController extends Controller
             ));
         }
         return $response;
+    }
+
+    public function latestvideos(){
+        if (isset($_GET['pg'])){
+            $limit = $_GET['pg']*10;
+            if ($_GET['pg'] == 1){
+                $offset = 0;
+            }else{
+                $offset = 10*$_GET['pg'];
+            }
+
+        }else{
+            $limit = 10;
+            $offset = 0;
+        }
+        $posts = Post::where('post_type','video')->where('status','publish')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+
+        $response = array();
+        foreach ($posts as $post){
+            $thumbnail = @$post->metas()->where('key','thumbnail')->first()->value;
+            $mp4 = $post->metas()->where('key','VideoFile')->get();
+            $files = array();
+            if ($mp4) {
+                if (count($mp4)>1) {
+                    foreach ($mp4 as $result) {
+                        $files[]=env('APP_URL').$result->value;
+                    }
+                }else{
+                    $mp4 = $post->metas()->where('key','VideoFile')->first();
+                    $files[]=env('APP_URL').$mp4->value;
+                }
+            }
+            $duration = @$post->metas()->where('key','VideoDuration')->first()->value;
+            $response[] = array(
+                'id'    =>  $post->id,
+                'title' =>  $post->title,
+                'content'   =>  $post->content,
+                'excerpt'   =>  $post->excerpt,
+                'comment_status'   =>  $post->comment_status,
+                'post_type'   =>  $post->post_type,
+                'thumbnail' =>  env('APP_URL').@$thumbnail,
+                'MP4'    =>  $files,
+                'duration'    =>  $duration,
+                'views' =>  $post->views,
+                'rate'  =>  $post->rate,
+            );
+        }
+        return response()->json($response);
+    }
+
+    public function update_user_info(Request $request){
+        $user = $request->user();
+        $messages = [];
+        // user profile photo
+        $file = $request->file('attachment');
+        if ($file){
+            $save = $file->store('content/uploads/useruploads/'.date('Y').'/'.date('m').'/'.date('d'),'public');
+            $profile = UserMeta::firstOrNew(
+                array(
+                    'user_id' => $user->id,
+                    'key'   =>  'thumbnail'
+                )
+            );
+            $profile->user_id = $user->id;
+            $profile->key='thumbnail';
+            $profile->value='/'.$save;
+            $profile->save();
+            $image = \Image::make($file->getRealPath())->encode('jpg')
+               ->fit(450,450)
+               ->save('content/uploads/useruploads/'.date('Y').'/'.date('m').'/'.date('d').'/test.jpg',100);
+
+           $messages[]=['profile photo has been successfuly changed'];
+        }
+
+        if (isset($request->name)) {
+            $user->name = $request->name;
+            $user->update();
+            $messages[]=['user full name has been successfuly changed'];
+        }
+
+        if (isset($request->mobile)) {
+            $user->mobile = $request->mobile;
+            $user->update();
+            $messages[]=['user mobile has been successfuly changed'];
+        }
+
+        if (isset($request->bio)) {
+            $user->bio = $request->bio;
+            $user->update();
+            $messages[]=['user biography has been successfuly changed'];
+        }
+
+        if (isset($request->newpassword) AND isset($request->password)) {
+            if(Hash::check($request->password, $user->password)){
+                $user->password = Hash::make($request->newpassword);
+                $user->update();
+                $messages[]=['user password has been successfuly changed'];
+            }
+            $messages[]=['user password is not correct'];
+        }
+
+        if ($request->telegram){
+            $telegram = UserMeta::firstOrNew(
+                array(
+                    'user_id' => $user->id,
+                    'key'   =>  'telegram'
+                )
+            );
+            $telegram->user_id = $user->id;
+            $telegram->key='telegram';
+            $telegram->value=$request->telegram;
+            $telegram->save();
+            $messages[]=['user telegram id has been successfuly changed'];
+        }
+
+        if ($request->facebook){
+            $facebook = UserMeta::firstOrNew(
+                array(
+                    'user_id' => $user->id,
+                    'key'   =>  'facebook'
+                )
+            );
+            $facebook->user_id = $user->id;
+            $facebook->key='facebook';
+            $facebook->value=$request->facebook;
+            $facebook->save();
+            $messages[]=['user facebook id has been successfuly changed'];
+        }
+
+        if ($request->instagram){
+            $instagram = UserMeta::firstOrNew(
+                array(
+                    'user_id' => $user->id,
+                    'key'   =>  'instagram'
+                )
+            );
+            $instagram->user_id = $user->id;
+            $instagram->key='instagram';
+            $instagram->value=$request->instagram;
+            $instagram->save();
+            $messages[]=['user instagram id has been successfuly changed'];
+        }
+
+        if ($request->twitter){
+            $twitter = UserMeta::firstOrNew(
+                array(
+                    'user_id' => $user->id,
+                    'key'   =>  'twitter'
+                )
+            );
+            $twitter->user_id = $user->id;
+            $twitter->key='twitter';
+            $twitter->value=$request->twitter;
+            $twitter->save();
+            $messages[]=['user twitter id has been successfuly changed'];
+        }
+        return response()->json($messages);
     }
 }

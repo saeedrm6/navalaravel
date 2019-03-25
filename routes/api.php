@@ -30,9 +30,12 @@ Route::group([
     ], function() {
         Route::get('logout', 'ApiController@logout');
         Route::get('user/{user}', 'ApiController@detailofuser');
+        Route::get('user/details/auth', 'ApiController@detailofmine');
+        Route::post('user/details/auth','ApiController@update_user_info');
         Route::get('posts/{post}','ApiController@showpost');
         Route::get('posts','ApiController@getposts');
         Route::get('posts/{post}/comments','ApiController@getallcomments');
+        Route::get('posts/videos/get','ApiController@latestvideos');
         Route::post('posts/sendcomment','ApiController@sendcomment');
         Route::post('posts/sendrate','ApiController@sendrate');
         Route::post('posts/uploadvideo','ApiController@uploadvideo');

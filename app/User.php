@@ -47,10 +47,10 @@ class User extends Authenticatable
         return $this->hasMany('App\UserMeta');
     }
 
-    public function getuserprofile(User $user)
+    public function getuserprofile()
     {
-        if ($user->metas()->where('key','thumbnail')->first()){
-            return @$user->metas()->where('key','thumbnail')->first()->value;
+        if ($this->metas()->where('key','thumbnail')->first()){
+            return env('APP_URL').@$this->metas()->where('key','thumbnail')->first()->value;
         }
         return env('APP_URL').'/img/profile/avatar.png';
     }
@@ -72,5 +72,20 @@ class User extends Authenticatable
         return $this->hasMany('App\Rate');
     }
 
-
+    public function social_medias(){
+        $social = [];
+        if ($this->metas()->where('key','telegram')->first()){
+            $social[] = ['telegram' => @$this->metas()->where('key','telegram')->first()->value];
+        }
+        if ($this->metas()->where('key','instagram')->first()){
+            $social[] = ['instagram' => @$this->metas()->where('key','instagram')->first()->value];
+        }
+        if ($this->metas()->where('key','twitter')->first()){
+            $social[] = ['twitter' => @$this->metas()->where('key','twitter')->first()->value];
+        }
+        if ($this->metas()->where('key','facebook')->first()){
+            $social[] = ['facebook' => @$this->metas()->where('key','facebook')->first()->value];
+        }
+        return $social;
+    }
 }

@@ -51,12 +51,12 @@ class FFMPEG_check extends Command
             ]);
             $ffmpeg->status = 'end';
             $ffmpeg->update();
-            $ffmpeg->delete();
             PostMeta::create([
                 'post_id'   =>  $ffmpeg->post_id,
                 'key'       =>  'convert',
                 'value'     =>  'true'
             ]);
+            $ffmpeg->delete();
         }
     }
 }
