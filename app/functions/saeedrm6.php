@@ -42,7 +42,7 @@ function ffmpeg_image($input){
 }
 
 function ffmpeg_video($input,$size, $audio_size = '128k', $video_bitrate = '1000k' , $format = 'mp4') {
-   $shell = 'ffmpeg -i -y ' . get_server_patch().'/public'.$input . ' -f '.$format.' -framerate 24 -codec:v libx264 -profile:v high -preset slower -b:v '.$video_bitrate.' -vf scale=' . $size . ' -threads 6 -c:a aac -b:a ' . $audio_size . ' -strict experimental ' .  get_server_patch().'/public'.$input.'-mobile.mp4';
+   $shell = 'ffmpeg -y ' . get_server_patch().'/public'.$input . ' -f '.$format.' -framerate 24 -codec:v libx264 -profile:v high -preset slower -b:v '.$video_bitrate.' -vf scale=' . $size . ' -threads 6 -c:a aac -b:a ' . $audio_size . ' -strict experimental ' .  get_server_patch().'/public'.$input.'-mobile.mp4';
    // echo $shell;
     shell_exec($shell);
     return $input.'-mobile.mp4';
