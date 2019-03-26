@@ -46,4 +46,29 @@ class Post extends Model
         return $this->metas()->where('key','thumbnail')->first() ? $this->metas()->where('key','thumbnail')->first()->value : false;
     }
 
+    public function setview($id){
+        $check = Post::find($id);
+        if ($check) {
+            $check->views = $check->views+1;
+            $check->update();
+        }
+        return [];
+    }
+
+    public function getview($id){
+        $check = Post::find($id);
+        if ($check) {
+            return $check->views;
+        }
+        return [];
+    }
+
+    public function getrate($id){
+        $check = Post::find($id);
+        if ($check) {
+            return $check->rate;
+        }
+        return [];
+    }
+
 }

@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 // use phpseclib\Crypt\Hash;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 
 class ApiController extends Controller
 {
@@ -209,9 +211,13 @@ class ApiController extends Controller
         return response()->json([$data]);
     }
 
-    public function showpost(Post $post)
+    public function showpost($post)
     {
-        if ($post->status == 'publish'){
+        $post = Cache::remember('detail-of-postid-'.$post,3,function () use($post){
+            return Post::find($post);
+        });
+        if ($post) {
+            if ($post->status == 'publish'){
             $thumbnail = @$post->metas()->where('key','thumbnail')->first()->value;
             $mp4 = $post->metas()->where('key','VideoFile')->get();
             $files = array();
@@ -227,8 +233,7 @@ class ApiController extends Controller
                 
             }
             $duration = @$post->metas()->where('key','VideoDuration')->first()->value;
-            $post->views=$post->views+1;
-            $post->update();
+            $post->setview($post->id);
             return response()->json([
                 'id'    =>  $post->id,
                 'title' =>  $post->title,
@@ -239,14 +244,19 @@ class ApiController extends Controller
                 'thumbnail' =>  env('APP_URL').@$thumbnail,
                 'MP4'    =>  $files,
                 'duration'    =>  $duration,
-                'views' =>  $post->views,
-                'rate'  =>  $post->rate,
+                'views' =>  $post->getview($post->id),
+                'rate'  =>  $post->getrate($post->id),
             ]);
-        }else{
-            return response()->json(array(
-                'status'    =>  'error'
-            ));
+            }      
+            else{
+                return response()->json(array(
+                    'status'    =>  'post is not available'
+                ));
+            }
         }
+        return response()->json(array(
+                    'status'    =>  'post is not available'
+        ));
     }
 
     public function uploadvideo(Request $request)
@@ -326,7 +336,13 @@ class ApiController extends Controller
             $limit = 10;
             $offset = 0;
         }
-        $posts = Post::where('status','publish')->where('post_type','post')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+
+        $currentPage = isset($_GET['pg']) ? (int)$_GET['pg'] : 1;
+        $posts = Cache::remember('latestposts-'.$currentPage,3,function () use($limit,$offset){
+            return Post::where('status','publish')->where('post_type','post')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+        });
+
+
         $response = array();
         foreach ($posts as $post){
             $thumbnail = @$post->metas()->where('key','thumbnail')->first()->value;
@@ -389,21 +405,32 @@ class ApiController extends Controller
         return $response;
     }
 
-    public function getallcomments(Post $post){
-        $comments = $post->comments()->where('status','publish')->orderby('created_at','asc')->get();
-        $export = array();
-        if ($comments) {
-            foreach ($comments as $comment) {
-                $export[]=array(
-                    'user_id'   => $comment->user_id, 
-                    'avatar'    =>  env('APP_URL').User::find($comment->user_id)->getuserprofile(User::find($comment->user_id)),
-                    'post_id'   => $comment->post_id, 
-                    'body'   => $comment->body, 
-                    'created_at'    =>  $comment->created_at
-                );
+    public function getallcomments($post){
+        $post = Cache::remember('detail-of-postid-'.$post,3,function () use($post){
+            return Post::find($post);
+        });
+        if ($post) {
+            $comments = Cache::remember('all-comments-of-postid-'.$post->id,3,function () use($post){
+            return $post->comments()->where('status','publish')->orderby('created_at','asc')->get();
+            });
+
+            $export = array();
+            if ($comments) {
+                foreach ($comments as $comment) {
+                    $export[]=array(
+                        'user_id'   => $comment->user_id, 
+                        'avatar'    =>  User::find($comment->user_id)->getuserprofile(User::find($comment->user_id)),
+                        'post_id'   => $comment->post_id, 
+                        'body'   => $comment->body, 
+                        'created_at'    =>  $comment->created_at
+                    );
+                }
             }
+            return response()->json($export);
         }
-        return response()->json($export);
+        return response()->json(array(
+                    'status'    =>  'post is not available'
+        ));
     }
 
     public function sendrate(Request $request){
@@ -479,7 +506,13 @@ class ApiController extends Controller
             $limit = 10;
             $offset = 0;
         }
-        $posts = Post::where('post_type','video')->where('status','publish')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+        
+
+        $currentPage = isset($_GET['pg']) ? (int)$_GET['pg'] : 1;
+        $posts = Cache::remember('latestvideos-'.$currentPage,3,function () use($limit,$offset){
+            return Post::where('post_type','video')->where('status','publish')->orderby('created_at','desc')->take($limit)->offset($offset)->get();
+        });
+
 
         $response = array();
         foreach ($posts as $post){
