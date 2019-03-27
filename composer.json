@@ -31,7 +31,8 @@
         },
         "files": [
             "app/functions/saeedrm6.php",
-            "app/functions/SmsIR_SendMessage.php"
+            "app/functions/SmsIR_SendMessage.php",
+            "app/functions/SmsIR_UltraFastSend.php"
         ]
     },
     "autoload-dev": {

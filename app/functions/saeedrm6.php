@@ -47,3 +47,29 @@ function ffmpeg_video($input,$size, $audio_size = '128k', $video_bitrate = '1000
     shell_exec($shell);
     return $input.'-mobile.mp4';
 }
+
+function send_fast_sms($mobile,$message){
+    date_default_timezone_set("Asia/Tehran");
+
+    // your sms.ir panel configuration
+    $APIKey = env('SMS_APIKey');
+    $SecretKey = env('SMS_SecretKey');
+
+    $APIURL = "https://ws.sms.ir/";
+
+    // message data
+    $data = array(
+        "ParameterArray" => array(
+            array(
+                "Parameter" => "VerificationCode",
+                "ParameterValue" => $message
+            )
+        ),
+        "Mobile" => $mobile,
+        "TemplateId" => "6920"
+    );
+
+    $SmsIR_UltraFastSend = new SmsIR_UltraFastSend($APIKey, $SecretKey, $APIURL);
+    $UltraFastSend = $SmsIR_UltraFastSend->ultraFastSend($data);
+    return [];
+}

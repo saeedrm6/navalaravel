@@ -82,7 +82,7 @@ class ApiController extends Controller
 
     public function final_signup(Request $request)
     {
-        if (isset($request->mobile) AND isset($request->password) AND isset($request->code)) {
+        if (isset($request->mobile) AND isset($request->password) AND isset($request->code) AND isset($request->name)) {
             $temporary = TemporaryUser::where('mobile', 'like', '%' . $request->mobile)->orderby('id', 'desc')->first();
             if ($temporary) {
                 if ($temporary->mobilecode == $request->code) {
@@ -94,12 +94,13 @@ class ApiController extends Controller
                             $mobile = $request->mobile;
                         }
                         $user = User::create([
-                            'username' => 'user' . rand(1, 1000000),
+                            'name' => $request->name,
                             'email' => str_random(5) . '@' . 'nava.ir',
                             'mobile' => $mobile,
                             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
                             'token' => str_random(25),
-                            'mobileverify' => 'verify'
+                            'mobileverify' => 'verify',
+                            'status'    =>  'publish',
                         ]);
                         if ($user){
 
@@ -120,6 +121,9 @@ class ApiController extends Controller
                             $varmobileregister->key = 'mobileregister';
                             $varmobileregister->value = 'true';
                             $varmobileregister->save();
+
+                            $temporary->delete();
+                            
                             return json_encode(
                                 array(
                                     'status'    =>  'register_successful',
