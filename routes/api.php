@@ -13,17 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-//Route::middleware('auth:api')->get('/user/{user}', function (Request $request) {
-//    echo json_encode(\App\User::find($user));
-//    return $request->user();
-//});
-
 Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::post('login', 'ApiController@login');
     Route::post('signup', 'ApiController@init_signup');
     Route::post('signup/finalize', 'ApiController@final_signup');
+    Route::post('forgetpassword/init','ApiController@init_forget');
+    Route::post('forgetpassword/final','ApiController@final_forget');
 
     Route::group([
         'middleware' => 'auth:api'

@@ -10,8 +10,8 @@ function get_server_patch(){
     return getcwd();
 }
 function send_direct_sms($mobile,$message){
-    $APIKey = "2b5072f1ba7b49c4616e72f1";
-    $SecretKey = "9092301202!@#";
+    $APIKey = env('SMS_APIKey');
+    $SecretKey = env('SMS_SecretKey');
     $LineNumber = "30004747472192";
 
     // your mobile numbers
@@ -48,7 +48,7 @@ function ffmpeg_video($input,$size, $audio_size = '128k', $video_bitrate = '1000
     return $input.'-mobile.mp4';
 }
 
-function send_fast_sms($mobile,$message){
+function send_fast_sms($mobile,$message,$type = 'register'){
     date_default_timezone_set("Asia/Tehran");
 
     // your sms.ir panel configuration
@@ -58,16 +58,33 @@ function send_fast_sms($mobile,$message){
     $APIURL = "https://ws.sms.ir/";
 
     // message data
-    $data = array(
-        "ParameterArray" => array(
-            array(
-                "Parameter" => "VerificationCode",
-                "ParameterValue" => $message
-            )
-        ),
-        "Mobile" => $mobile,
-        "TemplateId" => "6920"
-    );
+    switch($type){
+        case 'register':
+            $data = array(
+                "ParameterArray" => array(
+                    array(
+                        "Parameter" => "VerificationCode",
+                        "ParameterValue" => $message
+                    )
+                ),
+                "Mobile" => $mobile,
+                "TemplateId" => "9079"
+            );
+        break;
+        case 'forget':
+            $data = array(
+                "ParameterArray" => array(
+                    array(
+                        "Parameter" => "VerificationCode",
+                        "ParameterValue" => $message
+                    )
+                ),
+                "Mobile" => $mobile,
+                "TemplateId" => "9082"
+            );
+        break;
+    }
+    
 
     $SmsIR_UltraFastSend = new SmsIR_UltraFastSend($APIKey, $SecretKey, $APIURL);
     $UltraFastSend = $SmsIR_UltraFastSend->ultraFastSend($data);

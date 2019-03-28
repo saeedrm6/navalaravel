@@ -10,6 +10,7 @@ use App\User;
 use App\UserMeta;
 use App\Ffmpeg;
 use App\Rate;
+use App\ForgetPassword;
 use Carbon\Carbon;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -58,7 +59,8 @@ class ApiController extends Controller
                         'mobilecode'   =>  $code,
                     ]);
                 }
-                send_direct_sms($request->mobile,'کد فعال سازی شما : '.$code);
+                // send_direct_sms($request->mobile,'کد فعال سازی شما : '.$code);
+                send_fast_sms($request->mobile,$code);
                 return json_encode(
                     array(
                         'status'    =>  'send_mobile_code',
@@ -659,4 +661,88 @@ class ApiController extends Controller
         }
         return response()->json($messages);
     }
+
+    public function init_forget(Request $request){
+        $validator = Validator::make($request->all(), [
+            'mobile'   =>  'required|min:10',
+        ],[
+            'mobile.required'   =>  'Mobile is required',
+            'mobile.min'   =>  'mobile numbers not correct',
+        ]);
+        if ($validator->fails()) {
+            $response['response'] = $validator->messages();
+        }
+        else{
+            $mobile = '';
+            if (strlen($request->mobile)==10){
+                $mobile = '0'.$request->mobile;
+            }else{
+                $mobile = $request->mobile;
+            }
+            $checkrequestexist = ForgetPassword::where('mobile','like','%'.$mobile)->first();
+            $code = '';
+            if (!$checkrequestexist) {
+                $code = rand(1000,9999);
+                ForgetPassword::create([
+                    'mobile'    =>  $mobile,
+                    'code'      =>  $code
+                ]);
+                send_fast_sms($request->mobile,$code,'forget');
+            }else{
+                $code = $checkrequestexist->code;
+                send_fast_sms($request->mobile,$code,'forget');
+            }
+            $response['response'] = 'successful';
+        }
+        return response()->json($response);
+    }
+
+    public function final_forget(Request $request){
+        $validator = Validator::make($request->all(), [
+            'mobile'   =>  'required|min:10',
+            'code'     =>   'required',
+            'newpassword'   =>  'required|min:6',
+        ],[
+            'mobile.required'   =>  'Mobile is required',
+            'mobile.min'   =>  'mobile numbers not correct',
+            'code.required'   =>  'code is required',
+            'newpassword.required'   =>  'new password is required',
+            'newpassword.min'   =>  'min charecters of password is 6',
+        ]);
+        if ($validator->fails()) {
+            $response['response'] = $validator->messages();
+        }
+        else{
+            $mobile = '';
+            if (strlen($request->mobile)==10){
+                $mobile = '0'.$request->mobile;
+            }else{
+                $mobile = $request->mobile;
+            }
+            $checkrequestexist = ForgetPassword::where('mobile','like','%'.$mobile)->first();
+            if (!$checkrequestexist) {
+                $response['response'] = 'error';
+                $response['details'] = 'your request for init forget password not match found!';
+            }
+            else{
+                if ($request->code != $checkrequestexist->code) {
+                    $response['response'] = 'error';
+                    $response['details'] = 'your code is not correct';
+                }else{
+                    $user = User::where('mobile',$mobile)->where('mobileverify','verify')->first();
+                    if (!$user) {
+                        $response['response'] = 'error';
+                        $response['details'] = 'something were wrong!! the user is not exist! contact with admin to more check';
+                    }else{
+                        $user->password = Hash::make($request->newpassword);
+                        $user->update();
+                        $checkrequestexist->delete();
+                        $response['response'] = 'successful';
+                    }
+                }
+            }
+        }
+        return response()->json($response);
+    }
+
 }
